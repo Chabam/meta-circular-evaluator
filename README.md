@@ -1,6 +1,6 @@
-# Meta Circual Evaluator
+# Metacircular Evaluator
 
-Port of SICP's chapter 4 meta circular evaluator to Racket.
+Port of SICP's chapter 4 metacircular evaluator to Racket.
 
 You can find the original source [here](https://mitp-content-server.mit.edu/books/content/sectbyfn/books_pres_0/6515/sicp.zip/code/index.html)
 
