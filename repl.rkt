@@ -6,14 +6,16 @@
 
 (define input-prompt ";;; M-Eval input:")
 (define output-prompt ";;; M-Eval value:")
+(define error-prompt ";;; M-Eval error:")
 
 
 (define (repl)
   (prompt-for-input input-prompt)
   (let ((input (read)))
-    (let ((output (eval input the-global-environment)))
-      (announce-output output-prompt)
-      (user-print output)))
+    (with-handlers ((exn? announce-error))
+      (let ((output (eval input the-global-environment)))
+        (announce-output output-prompt)
+        (user-print output))))
   (repl))
 
 (define (prompt-for-input string)
@@ -21,6 +23,13 @@
 
 (define (announce-output string)
   (newline) (display string) (newline))
+
+(define (announce-error error)
+  (newline)
+  (display error-prompt)
+  (newline)
+  (display (exn-message error))
+  (newline))
 
 (define (user-print object)
   (if (compound-procedure? object)

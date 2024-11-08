@@ -1,5 +1,7 @@
 #lang racket
 
+(require compatibility/mlist)
+
 (require "environment.rkt")
 (require "expression.rkt")
 
@@ -12,6 +14,7 @@
         (list 'cdr cdr)
         (list 'cons cons)
         (list 'null? null?)
+        (list '+ +)
         ;;      more primitives
         ))
 
@@ -20,14 +23,13 @@
        primitive-procedures))
 
 (define (primitive-procedure-objects)
-  (map (lambda (proc) (list 'primitive (cadr proc)))
-       primitive-procedures))
-
+  (mmap (lambda (proc) (mlist 'primitive (cadr proc)))
+        (apply mlist primitive-procedures)))
 
 (define (primitive-procedure? proc)
   (tagged-list? proc 'primitive))
 
-(define (primitive-implementation proc) (cadr proc))
+(define (primitive-implementation proc) (mcar (mcdr proc)))
 
 (define (setup-environment)
   (let ((initial-env

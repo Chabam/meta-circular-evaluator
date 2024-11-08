@@ -1,5 +1,7 @@
 #lang racket
 
+(require compatibility/mlist)
+
 (require "expression.rkt")
 (require "environment.rkt")
 (require "procedure.rkt")
@@ -13,25 +15,8 @@
 (require "expression-types/cond.rkt")
 
 (provide eval)
-(provide apply)
 
-;;;;METACIRCULAR EVALUATOR FROM CHAPTER 4 (SECTIONS 4.1.1-4.1.4) of
-;;;; STRUCTURE AND INTERPRETATION OF COMPUTER PROGRAMS
-
-;;;;Matches code in ch4.scm
-
-;;;;This file can be loaded into Scheme as a whole.
-;;;;Then you can initialize and start the evaluator by evaluating
-;;;; the two commented-out lines at the end of the file (setting up the
-;;;; global environment and starting the driver loop).
-
-;;;;**WARNING: Don't load this file twice (or you'll lose the primitives
-;;;;  interface, due to renamings of apply).
-
-;;;from section 4.1.4 -- must precede def of metacircular apply
 (define apply-in-underlying-racket apply)
-
-;;;SECTION 4.1.1
 
 (define (eval exp env)
   (cond ((self-evaluating? exp) exp)
@@ -61,7 +46,7 @@
           (procedure-body procedure)
           (extend-environment
            (procedure-parameters procedure)
-           arguments
+           (apply mlist arguments)
            (procedure-environment procedure))))
         (else
          (error

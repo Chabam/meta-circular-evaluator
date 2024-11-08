@@ -1,5 +1,7 @@
 #lang racket
 
+(require compatibility/mlist)
+
 (provide the-empty-environment)
 (provide extend-environment)
 (provide lookup-variable-value)
@@ -13,19 +15,19 @@
 (define the-empty-environment '())
 
 (define (make-frame variables values)
-  (cons variables values))
+  (mcons variables values))
 
-(define (frame-variables frame) (car frame))
-(define (frame-values frame) (cdr frame))
+(define (frame-variables frame) (mcar frame))
+(define (frame-values frame) (mcdr frame))
 
 (define (add-binding-to-frame! var val frame)
-  (set-mcar! frame (cons var (car frame)))
-  (set-mcdr! frame (cons val (cdr frame))))
+  (set-mcar! frame (cons var (mcar frame)))
+  (set-mcdr! frame (mcons val (mcdr frame))))
 
 (define (extend-environment vars vals base-env)
-  (if (= (length vars) (length vals))
+  (if (= (length vars) (mlength vals))
       (cons (make-frame vars vals) base-env)
-      (if (< (length vars) (length vals))
+      (if (< (length vars) (mlength vals))
           (error "Too many arguments supplied" vars vals)
           (error "Too few arguments supplied" vars vals))))
 
@@ -35,8 +37,8 @@
       (cond ((null? vars)
              (env-loop (enclosing-environment env)))
             ((eq? var (car vars))
-             (car vals))
-            (else (scan (cdr vars) (cdr vals)))))
+             (mcar vals))
+            (else (scan (cdr vars) (mcdr vals)))))
     (if (eq? env the-empty-environment)
         (error "Unbound variable" var)
         (let ((frame (first-frame env)))
@@ -51,7 +53,7 @@
              (env-loop (enclosing-environment env)))
             ((eq? var (car vars))
              (set-mcar! vals val))
-            (else (scan (cdr vars) (cdr vals)))))
+            (else (scan (cdr vars) (mcdr vals)))))
     (if (eq? env the-empty-environment)
         (error "Unbound variable -- SET!" var)
         (let ((frame (first-frame env)))
@@ -66,6 +68,6 @@
              (add-binding-to-frame! var val frame))
             ((eq? var (car vars))
              (set-mcar! vals val))
-            (else (scan (cdr vars) (cdr vals)))))
+            (else (scan (cdr vars) (mcdr vals)))))
     (scan (frame-variables frame)
           (frame-values frame))))

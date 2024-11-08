@@ -20,9 +20,9 @@
 (define (text-of-quotation exp) (cadr exp))
 
 (define (tagged-list? exp tag)
-  (if (pair? exp)
-      (eq? (car exp) tag)
-      false))
+  (cond ((pair? exp) (eq? (car exp) tag))
+        ((mpair? exp) (eq? (mcar exp) tag))
+        (else false)))
 
 (define (variable? exp) (symbol? exp))
 
