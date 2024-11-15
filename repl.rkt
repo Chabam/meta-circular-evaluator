@@ -38,5 +38,7 @@
                      (procedure-body object)
                      '<procedure-env>))
       (display object)))
-
+(let ((list-lib (read (open-input-file "libraries/list.mceval"))))
+  (displayln "Loading list library")
+  (actual-value list-lib the-global-environment))
 (repl)

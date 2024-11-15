@@ -33,5 +33,5 @@
   (tagged-list? obj 'evaluated-thunk))
 
 (define (thunk-value evaluated-thunk)
-  (cadr evaluated-thunk))
+  (mcar (mcdr evaluated-thunk)))
 
