@@ -13,7 +13,7 @@
   (prompt-for-input input-prompt)
   (let ((input (read)))
     (with-handlers ((exn? announce-error))
-      (let ((output (eval input the-global-environment)))
+      (let ((output (actual-value input the-global-environment)))
         (announce-output output-prompt)
         (user-print output))))
   (repl))
